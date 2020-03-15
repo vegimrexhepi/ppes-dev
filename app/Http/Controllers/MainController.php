@@ -17,6 +17,7 @@ class MainController extends Controller
 
     public function dashboard(Request $request)
     {
+
         if (! $request->user()->isLecturer()) {
             //return view('student.index', ['user' => $request->user()]);
             return redirect()->route('student.index');

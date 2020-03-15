@@ -21,7 +21,18 @@
                             {{ Auth::user()->first_name.' '.Auth::user()->last_name }}
                         @endif
                     </a>
+                    <div class="edit-profile"><a href="{{ route('lecturer.edit', ['lecturer' => Auth::id()]) }}">Edit Profile</a></div>
                 </li>
+                 <a href="{{ route('lecturer.activities.index', ['lecturer' => Auth::id()]) }}">
+                   <li class="{{ substr(Route::currentRouteName(), 20, 7) != 'results' ? 'active' : '' }}">
+                     Activities
+                   </li>
+                 </a>
+                <a href="{{ route('lecturer.activities.results', ['lecturer' => Auth::id()]) }}">
+                  <li class="{{ substr(Route::currentRouteName(), 20, 7) == 'results' ? 'active' : '' }}">
+                    Results
+                  </li>
+                </a>
             </ul>
         </div>
     </div>

@@ -1,4 +1,4 @@
-@extends('layouts.app-student')
+@extends('layouts.app-lecturer')
 
 <!-- Main Content -->
 @section('content-wrapper')

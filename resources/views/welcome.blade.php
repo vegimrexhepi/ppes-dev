@@ -1,4 +1,4 @@
-@extends('layouts.app-student')
+@extends('layouts.app-lecturer')
 @section('title', 'Login')
 
 @section('content-wrapper')
@@ -23,6 +23,11 @@
                 <div class="social-login">
                     <h3>Continue as:</h3>
                     <div class="social-login-buttons">
+                      <a href="{{ url('/login?role=lecturer') }}">
+                        <button id="lecturer" class="btn btn-link-2" name="button">
+                          <i class="fa fa-male"></i> Lecturer
+                        </button>
+                      </a>
 
                         <a href="{{ url('/login?role=student') }}">
                           <button id="student" class="btn btn-link-2"  name="button">

@@ -133,6 +133,8 @@
             channel.bind('ppes.student-evaluation-expired', redirectUser);
 
 
+
+
             $(function() {
                 $('.rate').barrating({
                     theme: 'bootstrap-stars'

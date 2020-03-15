@@ -74,7 +74,7 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/dashboard', ['as' => 'main.dashboard', 'uses' => 'MainController@dashboard']);
-
+    
         /*
         |--------------------------------------------------------------------------
         | Routes under "auth" AND "student" middleware
@@ -141,7 +141,23 @@ Route::group(['middleware' => 'web'], function () {
 
         });
 
-    
+        /*
+        |--------------------------------------------------------------------------
+        | Routes under "auth" AND "lecturer" middleware
+        |--------------------------------------------------------------------------
+        |
+        | Only authenticated users, with "role" of "lecturer" may have
+        | access to routes listed under "lecturer" middleware group.
+        |
+        */
+
+        Route::group(['middleware' => 'lecturer'], function () {
+            
+            Route::resource('lecturer', 'LecturerController');
+
+        }); // middleware "lecturer"
+
+
     }); // middleware "auth"
 
 }); // middleware "web"
