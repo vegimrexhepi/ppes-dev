@@ -33,6 +33,7 @@ Route::group(['middleware' => 'web'], function () {
     |
     */
 
+    Route::get('/', ['middleware' => 'guest', 'as' => 'main.index', 'uses' => 'MainController@index']);
     Route::get('test', 'TestController@index')->name('testingroute');
     Route::get('fsee', 'TestController@fireStudentEvaluationEvent')->name('fireStudentEvaluationEvent');
 
@@ -61,3 +62,86 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::auth();
 
+    /*
+    |--------------------------------------------------------------------------
+    | Routes under "auth" middleware
+    |--------------------------------------------------------------------------
+    |
+    | Authenticated users with any kind of "role" may have access
+    | to routes that are listed, under "auth" middleware group.
+    |
+    */
+
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('/dashboard', ['as' => 'main.dashboard', 'uses' => 'MainController@dashboard']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Routes under "auth" AND "student" middleware
+        |--------------------------------------------------------------------------
+        |
+        | Only authenticated users, with "role" of "student" may have
+        | access to routes listed under "student" middleware group.
+        |
+        */
+
+        Route::group(['middleware' => 'student'], function () {
+
+            Route::get('student/activities/enroll/{enrollmentkey}', [
+                'uses' => 'StudentController@activitiesEnrollWithKey'
+            ]);
+            Route::get('student/activities/enroll', [
+                'as' => 'student.activities.enroll',
+                'uses' => 'StudentController@activitiesEnroll'
+            ]);
+            Route::post('student/activities/enroll', [
+                'as' => 'student.activities.enroll.store',
+                'uses' => 'StudentController@activitiesEnrollStore'
+            ]);
+            Route::get('student/activities/enrolled', [
+                'as' => 'student.activities.enrolled',
+                'uses' => 'StudentController@activitiesEnrolled'
+            ]);
+            Route::get('student/activities/enrolled/success', [
+                'as' => 'student.activities.enrolled_success',
+                'uses' => 'StudentController@activitiesEnrolledSuccess'
+            ]);
+            Route::get('student/activities/{activities}/enrolled', [
+                'as' => 'student.activities.enrolled_show',
+                'uses' => 'StudentController@activitiesEnrolledShow'
+            ]);
+            Route::post('student/activities/join', [
+                'as' => 'student.activities.join',
+                'uses' => 'StudentController@activitiesJoin'
+            ]);
+            Route::get('student/activities/evaluating', [
+                'as' => 'student.activities.evaluating',
+                'uses' => 'StudentController@activitiesEvaluating'
+            ]);
+            Route::post('student/activities/evaluating', [
+                'as' => 'student.activities.evaluating.store',
+                'uses' => 'StudentController@activitiesEvaluatingStore'
+            ]);
+            Route::get('student/activities/results', [
+                'as' => 'student.activities.results',
+                'uses' => 'StudentController@activitiesResults'
+            ]);
+            Route::get('student/activities/{activities}/results', [
+                'as' => 'student.activities.results_show',
+                'uses' => 'StudentController@activitiesResultsShow'
+            ]);
+            Route::get('student/activities/expired', [
+                'as' => 'student.activities.expired',
+                'uses' => 'StudentController@activitiesExpired'
+            ]);
+            Route::post('student/{student}/edit', [
+                'as' => 'student.postEdit',
+                'uses' => 'StudentController@update']);
+            Route::resource('student', 'StudentController');
+
+        });
+
+    
+    }); // middleware "auth"
+
+}); // middleware "web"

@@ -55,6 +55,138 @@ class StudentController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, $id)
+    {
+        try {
+
+            $student = User::findOrFail($id);
+
+            return view('student.show', ['student' => $student]);
+
+        } catch (ModelNotFoundException $e) {
+
+            // Define flash alert object
+            $flashAlert = new \stdClass();
+            $flashAlert->type    = 'danger';
+            $flashAlert->content = 'Student not found in the database';
+
+            $request->session()->flash('flash_alert', $flashAlert);
+            
+            return redirect()->route('student.results');
+
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, $id)
+    {
+        $flashAlert = $request->session()->get('flash_alert', null);
+        $user = User::findOrFail($id);
+        return view('student.profile', [
+            'user' => $user,
+            'flashAlert' => $flashAlert
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        if($request->get('password')){
+            $rules = [
+                'first_name'     => 'required',
+                'last_name'     => 'required',
+                'student_id'     => 'required',
+                'email'  => 'required|email',
+                'password'  => 'required|min:6',
+                'password_confirmation'  => 'required|same:password'
+            ];
+        }else{
+            $rules = [
+                'first_name'     => 'required',
+                'last_name'     => 'required',
+                'student_id'     => 'required',
+                'email'  => 'required|email'
+            ];
+        }
+
+        // Validate the data taken from the request
+        $this->validate($request, $rules);
+
+        $flashAlert = new \stdClass();
+        try {
+            $user = User::find($id);
+            $password = $request->get('current_password');
+            if(Hash::check($password, $user->password)){
+                $user->first_name = $request->get('first_name');
+                $user->last_name = $request->get('last_name');
+                $user->email = $request->get('email');
+                $user->student_id = $request->get('student_id');
+                //return $request->input('criteria');
+
+                $user->save();
+
+                $flashAlert->type    = 'success';
+                $flashAlert->content = 'Your profile was edited successfully';
+
+                $request->session()->flash('flash_alert', $flashAlert);
+
+                return redirect()->route('student.index', [
+                    'student' => $id
+                ]);
+            }else{
+                $flashAlert->type    = 'danger';
+                $flashAlert->content = 'Enter the correct password';
+
+                $request->session()->flash('flash_alert', $flashAlert);
+
+                return back();
+            }
+
+
+
+        } catch (ModelNotFoundException $e) {
+
+            // Define flash alert object
+            $flashAlert->type    = 'danger';
+            $flashAlert->content = 'User not found in the database';
+
+            $request->session()->flash('flash_alert', $flashAlert);
+
+            return redirect()->route('student.index', [
+                'student' => $id
+            ]);
+
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+
+    /**
      * Display the enrollment form.
      *
      * @param Request $request
