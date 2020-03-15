@@ -13,8 +13,23 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'ppes\Events\SomeEvent' => [
-            'ppes\Listeners\EventListener',
+        'ppes\Events\StudentWasBanned' => [
+            'ppes\Listeners\EmailBanNotification',
+        ],
+        'ppes\Events\StudentEvaluationStarted' => [
+            'ppes\Listeners\NotifyEnrolledStudents'
+        ],
+        'ppes\Events\StudentEvaluationExpired' => [
+            'ppes\Listeners\NotifyStudentsForExpiration'
+        ],
+        'ppes\Events\StudentEvaluationFinished' => [
+            'ppes\Listeners\NotifyVotingStudents'
+        ],
+        'ppes\Events\StudentJoinedEvaluation' => [
+            'ppes\Listeners\IncreaseActiveConnections'
+        ],
+        'ppes\Events\StudentHasVoted' => [
+            'ppes\Listeners\IncreaseSubmittedVotes'
         ],
     ];
 

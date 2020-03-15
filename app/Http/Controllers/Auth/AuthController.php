@@ -2,11 +2,13 @@
 
 namespace ppes\Http\Controllers\Auth;
 
-use ppes\User;
+use ppes\Models\Role;
+use ppes\Models\User;
 use Validator;
 use ppes\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -28,7 +30,7 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/dashboard';
 
     /**
      * Create a new authentication controller instance.
@@ -37,7 +39,27 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+        $this->middleware('guest', ['except' => 'logout']);
+    }
+
+    /**
+     * Show the application login form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showLoginForm(Request $request)
+    {
+
+        $role = $request->has('role') ? $request->input('role') : 'wrong_role';
+
+        $view = property_exists($this, 'loginView')
+                    ? $this->loginView : 'auth.authenticate';
+
+        if (view()->exists($view)) {
+            return view($view, ['role' => $role]);
+        }
+
+        return view('auth.login', ['role' => $role]);
     }
 
     /**
@@ -49,9 +71,11 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
+            'first_name' => 'required|regex:/^[(a-zA-Z\s)]+$/|max:255',
+            'last_name' => 'required|regex:/^[(a-zA-Z\s)]+$/|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|confirmed|min:6',
+            'student_id' => 'unique:users',
         ]);
     }
 
@@ -63,10 +87,27 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        // find the role from the hidden input
+        $roleName = $data['role'];
+        $role = Role::where('name', $roleName)->first();
+
+        $user = new User();
+        $user->first_name = $data['first_name'];
+        $user->last_name  = $data['last_name'];
+        $user->email      = $data['email'];
+        $user->password   = bcrypt($data['password']);
+
+        if ($roleName == 'student') {
+            // if user is student then insert its student id
+            $user->student_id = $data['student_id'];
+        }
+
+        // save user into the database
+        $user->save();
+
+        // after user is saved, attach its role
+        $user->roles()->attach($role->id);
+
+        return $user;
     }
 }

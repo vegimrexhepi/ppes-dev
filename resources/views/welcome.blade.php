@@ -1,45 +1,48 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Laravel</title>
+@extends('layouts.app-student')
+@section('title', 'Login')
 
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+@section('content-wrapper')
 
-        <style>
-            html, body {
-                height: 100%;
-            }
+    <!-- Top content -->
+    <div class="top-content">
 
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato';
-            }
+        <div class="inner-bg">
+            <div class="container">
 
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
+                <div class="row">
+                    <div class="col-sm-8 col-sm-offset-2 text">
+                        <h1><i class="icons-ppes fa fa-desktop"></i><strong>PPES</strong></h1>
+                        <div class="description">
+                            <p>
+                                Welcome to <strong>Peer Presentation Evaluation System</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {{-- /.row --}}
+                <div class="social-login">
+                    <h3>Continue as:</h3>
+                    <div class="social-login-buttons">
 
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
+                        <a href="{{ url('/login?role=student') }}">
+                          <button id="student" class="btn btn-link-2"  name="button">
+                            <i class="fa fa-graduation-cap"></i> Student
+                          </button>
+                        </a>
 
-            .title {
-                font-size: 96px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">Laravel 5</div>
+                    </div>
+                </div>
+                {{-- /.social-login --}}
+
             </div>
+            {{-- /.container --}}
         </div>
-    </body>
-</html>
+        {{-- /.inner-bg --}}
+    </div>
+    {{-- .top-content --}}
+
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('js/login.js') }}"></script>
+@endsection

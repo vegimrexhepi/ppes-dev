@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => ppes\User::class,
+            'model' => ppes\Models\User::class,
         ],
 
         // 'users' => [
