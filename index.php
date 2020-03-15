@@ -1,4 +1,4 @@
 <?php
-header("Location: /ppes-dev/public");
+header("Location: /ppes/public");
 exit();
 ?>
