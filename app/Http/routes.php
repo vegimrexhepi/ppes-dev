@@ -155,6 +155,46 @@ Route::group(['middleware' => 'web'], function () {
             
             Route::resource('lecturer', 'LecturerController');
 
+            // Lecturer-Activities custom routes: results
+            Route::get('lecturer/{lecturer}/activities/results', [
+                'as' => 'lecturer.activities.results', 
+                'uses' => 'LecturerActivitiesController@results']);
+            Route::get('lecturer/{lecturer}/activities/{activities}/results', [
+                'as' => 'lecturer.activities.results.show', 
+                'uses' => 'LecturerActivitiesController@resultsShow']);
+            Route::get('lecturer/{lecturer}/activities/{activities}/results/student/{student}', [
+                'as' => 'lecturer.activities.results.student.show', 
+                'uses' => 'LecturerActivitiesController@resultsStudentShow']);
+
+            // Lecturer-Activities custom routes: evaluation process
+            Route::get('lecturer/{lecturer}/activities/{activities}/evaluate/student/{student}', [
+                'as' => 'lecturer.activities.evaluate.student',
+                'uses' => 'LecturerActivitiesController@evaluateStudent']);
+            Route::get('lecturer/{lecturer}/activities/{activities}/evaluating/student/{student}', [
+                'as' => 'lecturer.activities.evaluating.student',
+                'uses' => 'LecturerActivitiesController@evaluatingStudent']);
+            Route::get('lecturer/evaluating/expired/activity/{activity}/student/{student}', [
+                'as' => 'lecturer.activities.evaluating.expired',
+                'uses' => 'LecturerActivitiesController@evaluatingStudentExpired']);
+            Route::get('lecturer/{lecturer}/activities/{activities}/evaluated/student/{student}', [
+                'as' => 'lecturer.activities.evaluated.student',
+                'uses' => 'LecturerActivitiesController@evaluatedStudent']);
+            
+            Route::get('lecturer/{lecturer}/activities/{activities}/confirmation', [
+                'as' => 'lecturer.activities.confirmation',
+                'uses' => 'LecturerActivitiesController@confirmation']);
+
+            Route::post('lecturer/{lecturer}/activities/{activities}/update', [
+                'as' => 'lecturer.activities.postEdit',
+                'uses' => 'LecturerActivitiesController@update']);
+            Route::post('lecturer/{lecturer}/edit', [
+                'as' => 'lecturer.postEdit',
+                'uses' => 'LecturerController@update']);
+            Route::post('lecturer/evaluate/student', [
+                'as' => 'lecturer.activities.evaluateStudentStore',
+                'uses' => 'LecturerActivitiesController@evaluateStudentStore']);
+            Route::resource('lecturer.activities', 'LecturerActivitiesController');
+
         }); // middleware "lecturer"
 
 
